@@ -6,7 +6,7 @@
 
 项目基于课程库 `com.oocourse.elevator3`，通过 `TimableOutput` 输出标准事件日志。
 
----
+
 
 ## 功能概览
 
@@ -16,7 +16,6 @@
 * 全程通过 **阻塞队列 + wait/notify** 实现线程间协作
 * 支持 **临时调度（SCHE）**：电梯以指定速度运行到指定楼层，开门后清空电梯内所有乘客；未到目的地的乘客会被“转移”为新的待调度乘客
 
----
 
 ## 项目结构
 
@@ -33,20 +32,6 @@
 * `Trans.java`：楼层字符串与内部整数表示的转换工具
 * `TestMain.java`：本地测试入口，支持带时间戳的输入回放（见下文）
 
----
-
-## 楼层表示
-
-内部使用整数楼层，输出/输入使用字符串楼层：
-
-| 内部 int | 字符串    |
-| -----: | :----- |
-| -4..-1 | B4..B1 |
-|   0..6 | F1..F7 |
-
-转换由 `Trans.trans1(int)->String` 与 `Trans.trans2(String)->int` 完成。
-
----
 
 ## 运行与依赖
 
@@ -72,9 +57,7 @@ javac -cp .;path\to\oocourse-elevator3.jar *.java
 java -cp .:path/to/oocourse-elevator3.jar MainClass
 ```
 
----
-
-## 输入格式
+## 输入与输出
 
 输入由库 `ElevatorInput` 解析，支持：
 
@@ -82,10 +65,6 @@ java -cp .:path/to/oocourse-elevator3.jar MainClass
 * `ScheRequest`
 
 > 具体文本格式以 `oocourse.elevator3` 的输入规范为准。
-
----
-
-## 输出事件（TimableOutput）
 
 项目会输出以下关键事件（格式严格由代码打印）：
 
@@ -96,8 +75,6 @@ java -cp .:path/to/oocourse-elevator3.jar MainClass
 * `OUT-S-<personId>-<floor>-<elevatorId>`：乘客在**目的地**下电梯（S=success）
 * `OUT-F-<personId>-<floor>-<elevatorId>`：乘客被**临时调度强制清空**导致未到目的地（F=fail/forced），会被重新投递回全局队列等待再分配
 * `SCHE-BEGIN-<elevatorId>` / `SCHE-END-<elevatorId>`：临时调度任务开始/结束
-
----
 
 ## 核心设计与调度策略
 
@@ -150,8 +127,6 @@ java -cp .:path/to/oocourse-elevator3.jar MainClass
 6. 将该电梯队列里尚未处理的乘客请求也“退回”全局队列（避免 silent 期间积压）
 7. 解除 silent（`outOfSilent()`）
 
----
-
 ## 结束条件
 
 * `InputThread` 读到 `null` 请求时：
@@ -165,8 +140,6 @@ java -cp .:path/to/oocourse-elevator3.jar MainClass
     * 对所有电梯队列 `setEnd()`
     * 调度线程结束
 * `ElevatorThread` 在其队列 `isEmpty() && isEnd()` 时退出
-
----
 
 ## 本地回放测试（TestMain）
 
